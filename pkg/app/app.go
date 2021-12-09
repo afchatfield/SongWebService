@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 
+	_ "github.com/go-sql-driver/mysql"
 	"gopkg.in/yaml.v3"
 )
 
@@ -31,12 +32,13 @@ func Connect() {
 
 	// if there is an error opening the connection, handle it
 	if err3 != nil {
+		fmt.Println(dbAddr)
+		trydb.Ping()
 		panic(err.Error())
 	}
-
 	db = trydb
-
 	fmt.Println("Successfully connected to database")
+	// return trydb
 }
 
 func GetDB() *sql.DB {

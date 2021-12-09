@@ -4,10 +4,9 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
-
 	"github.com/afchatfield/SongWebService/pkg/app"
 	"github.com/afchatfield/SongWebService/pkg/models"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestApp(t *testing.T) {

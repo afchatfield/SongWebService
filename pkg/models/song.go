@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"github.com/afchatfield/SongWebService/pkg/app"
+	_ "github.com/go-sql-driver/mysql"
 )
 
 // Record type (Song)
@@ -70,7 +71,6 @@ func GetSongByID(id string) Song {
 }
 
 func CreateSong(s *Song) {
-	// guid := uuid.New().String()
 	insForm, err := db.Prepare("INSERT INTO song(SONG_NAME, ARTIST, GUID) VALUES(?,?,?)")
 	if err != nil {
 		panic(err.Error())
@@ -88,7 +88,7 @@ func DeleteSongByID(id string) {
 	log.Printf("DELETE: ID: %v", id)
 }
 
-func UpdateSong(s Song) {
+func UpdateSong(s *Song) {
 	insForm, err := db.Prepare("UPDATE song SET SONG_NAME=?, ARTIST=? WHERE id=?")
 	if err != nil {
 		panic(err.Error())

@@ -13,7 +13,6 @@ import (
 	yaml "gopkg.in/yaml.v3"
 )
 
-// Initiate web server
 func main() {
 	yfile, err := ioutil.ReadFile("pkg/config/connection.yaml")
 	if err != nil {
