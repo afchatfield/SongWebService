@@ -2,6 +2,8 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
+	"io/ioutil"
 	"net/http"
 	"strconv"
 	"text/template"
@@ -62,7 +64,11 @@ func Show(w http.ResponseWriter, r *http.Request) {
 func CreateSongJson(w http.ResponseWriter, r *http.Request) {
 	CreateSong := &models.Song{}
 	utils.ParseBody(r, CreateSong)
-
+	models.CreateSong(CreateSong)
+	res, _ := json.Marshal(CreateSong)
+	w.Header().Set("Content-Type", "pkglication/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(res)
 }
 
 func New(w http.ResponseWriter, r *http.Request) {
@@ -79,6 +85,31 @@ func Insert(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/", http.StatusMovedPermanently) //301
 }
 
+func UpdateJson(w http.ResponseWriter, r *http.Request) {
+	var UpdateSong = &models.Song{}
+
+	// Read request body.
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		fmt.Println(err.Error())
+		w.WriteHeader(http.StatusInternalServerError) // Return 500 Internal Server Error.
+		return
+	}
+
+	// Parse body as json.
+	if err = json.Unmarshal(body, &UpdateSong); err != nil {
+		fmt.Println(err.Error())
+		w.WriteHeader(http.StatusBadRequest) // Return 400 Bad Request.
+		return
+	}
+
+	models.UpdateSong(UpdateSong)
+	res, _ := json.Marshal(UpdateSong)
+	w.Header().Set("Content-Type", "pkglication/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(res)
+}
+
 func Edit(w http.ResponseWriter, r *http.Request) {
 	Id := r.URL.Query().Get("id")
 	song := models.GetSongByID(Id)
@@ -93,6 +124,15 @@ func Update(w http.ResponseWriter, r *http.Request) {
 		Artist: r.FormValue("artist")}
 	models.UpdateSong(song)
 	http.Redirect(w, r, "/", http.StatusMovedPermanently) //301
+}
+
+func DeleteJson(w http.ResponseWriter, r *http.Request) {
+	Id := r.URL.Query().Get("id")
+	models.DeleteSongByID(Id)
+	res, _ := json.Marshal(nil)
+	w.Header().Set("Content-Type", "pkglication/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(res)
 }
 
 func Delete(w http.ResponseWriter, r *http.Request) {
